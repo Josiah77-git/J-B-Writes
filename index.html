@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="My Logo.png">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.jsdelivr.net/npm/dexie@latest/dist/dexie.min.js"></script>
+    <title>J B Shopping App</title>
+    <img src="My Logo.png" alt="Shop Logo" style="width: 300px; height: auto; display: block; margin: 0 auto;" />
+    <h1>J B Shopping App</h1>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:#ddd;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        footer{
+            font-family:Arial, Helvetica, sans-serif;
+            color: #ddd;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color:brown;
+        }
+        .product-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .product-container :hover{
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            border: #218838;
+            background-color: #28a745;
+            box-shadow: #333;
+        }
+        .product {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 200px; /* Fixed width for uniformity */
+        }
+        #receiptPopup {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-height: 90vh; /* Limits height so it's scrollable */
+    overflow-y: auto; /* Enables vertical scrolling */
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1001;
+}
+
+        .product {
+        position: relative;
+        width: 250px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .product:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .specs {
+        display: none;
+        position: relative;
+        width: 200px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .product:hover .specs {
+        display: block;
+    }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+       
+        .button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #7a6b0a;
+        }
+        #cart {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        #total {
+            font-weight: bold;
+            color: #ff6347;
+        }
+        #receiptPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            z-index: 1000;
+            width: 300px; 
+        }
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        #receiptPopup {
+        /* Existing styles */
+        width: 320px; /* Adjusted width for better fit */
+        font-family: monospace; /* Change font for a receipt look */
+    }
+    #receiptPopup h2 {
+        text-align: center;
+        color: crimson;
+    }
+    #receiptPopup table {
+        width: 100%; 
+        margin: 10px 0;
+    }
+    #receiptPopup td, #receiptPopup th {
+        text-align: left;
+    }
+    #morendat-section {
+        position: relative;
+        background-image: url('m-logo.png'); 
+        background-size: contain; 
+        background-position: center; 
+        background-repeat: no-repeat; 
+        padding: 100px 0; 
+    }
+    #Out-section {
+        position: relative;
+        background-image: url('ooa-logo3.png'); 
+        background-size: contain; 
+        background-position: center; 
+        background-repeat: no-repeat; 
+        padding: 100px 0; 
+    }
+    #nutfield-section {
+        position: relative;
+        background-image: url('Nf-logo.png'); 
+        background-size: contain; 
+        background-position: center; 
+        background-repeat: no-repeat; 
+        padding: 100px 0; 
+    }
+    #leleshwa-section {
+        position: relative;
+        background-image: url('leleshwa-logo1.png'); 
+        background-size: contain; 
+        background-position: center; 
+        background-repeat: no-repeat; 
+        padding: 100px 0; 
+    }
+    #Phone-Section {
+        position: relative;
+        background-color: #7a6b0a;
+        padding: 100px 0;
+    }
+    #appliances-section {
+        position: relative;
+        background-color: chocolate;
+    }
+
+</style>
+
+
+<div id="receiptPopup">
+    <h2>J B Shop</h2>
+    <img src="My Logo.png" alt="Shop Logo" style="width: 80px; height: auto; display: block; margin: 0 auto;" />
+    <p>Address: P.O Box 85, Thika</p>
+    <p>Tel: 0116496030</p>
+    <p>***************************</p>
+    <h3>CASH RECEIPT</h3>
+    <p>***************************</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody id="receiptItems"></tbody>
+    </table>
+    <p>***************************</p>
+    <p>Total: <span id="receiptTotal">Ksh. 0</span></p>
+    <p>***************************</p>
+    <button class="button" onclick="printReceipt()">Print Receipt</button>
+    <button class="button" onclick="closePopup()">Close</button>
+</div>
+<script>
+    function printPDF() {
+    const element = document.getElementById('receipt'); 
+    html2pdf(element, {
+        margin: 10,
+        filename: 'receipt.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    });
+}
+</script>
+
+<script>
+    function showHistory() {
+        const receiptItems = document.getElementById('receiptItems');
+        receiptItems.innerHTML = '';
+        let receiptTotal = 0;
+
+        cart.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.name} (Qty: ${item.quantity})</td><td>Ksh.${item.price.toFixed(2)}</td>`;
+            receiptItems.appendChild(tr);
+            receiptTotal += item.price;
+        });
+
+        // Update total in receipt
+        document.getElementById('receiptTotal').textContent = `Ksh.${receiptTotal.toFixed(2)}`;
+
+        // Sample cash and change calculation
+        const cashAmount = totalPrice; // Assuming user will pay exactly totalPrice
+        const changeAmount = cashAmount - receiptTotal;
+
+        document.getElementById('cashInput').textContent = `Ksh.${cashAmount.toFixed(2)}`;
+        document.getElementById('changeOutput').textContent = `Ksh.${changeAmount.toFixed(2)}`;
+
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('receiptPopup').style.display = 'block';
+    }
+</script>
+<script>
+    function generateReceipt(cartItems) {
+    let receiptItems = document.getElementById("receipt-items");
+    let totalAmount = 0;
+
+    receiptItems.innerHTML = ""; // Clear existing content
+
+    cartItems.forEach(item => {
+        let row = `<tr>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>Ksh. ${item.price.toFixed(2)}</td>
+            <td>Ksh. ${(item.quantity * item.price).toFixed(2)}</td>
+        </tr>`;
+        receiptItems.innerHTML += row;
+        totalAmount += item.quantity * item.price;
+    });
+
+    document.getElementById("receipt-total").innerText = totalAmount.toFixed(2);
+}
+
+</script>
+<h3>Follow us on: </h3><br>
+<a href="https://web.facebook.com/profile.php?id=100078729503192" target="_blank">
+    <img src="https://www.kenyanut.com/wp-content/themes/kenyanut/images/facebook_icon.png" alt="Facebook"/>
+</a>
+<a href="https://www.instagram.com/j_b_w.r.i.t.e.s/" target="_blank">
+    <img src="https://www.kenyanut.com/wp-content/themes/kenyanut/images/instagram_icon.png" alt="Instagram"/>
+</a>
+<a href="https://www.linkedin.com/in/jbwrites-waithaka/" target="_blank">
+    <img src="https://www.kenyanut.com/wp-content/themes/kenyanut/images/linkedin_icon.png" alt="LinkedIn"/>
+</a>
+</head>
+    <script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+   
+});
+}
+</script>
+<body>
+
+
+
+<!-- Phone Products -->
+<section id="Phone-Section">
+    <h1>Phones Section</h1>
+
+<div class="product-container">
+    <div class="product">
+        <h3>Itel S24</h3>
+        <img src="itel s24.jpg" alt="Itel S24">
+        <p>Price: Ksh. 10,500.00</p>
+        <button class="button" onclick="addToCart('Itel S24', 10500.00)">Add to Cart</button>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+                <li>Display: 6.6" HD+</li>
+                <li>Processor: Octa-Core</li>
+                <li>RAM: 4GB</li>
+                <li>Storage: 128GB</li>
+                <li>Battery: 5000mAh</li>
+                <li>Camera: 16MP + AI Lens</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="product">
+        <h3>Tecno Pop 9</h3>
+        <img src="Tecno Pop 9.jpg" alt="Tecno Pop 9">
+        <p>Price: Ksh. 9,499.00</p>
+        <button class="button" onclick="addToCart('Tecno Pop 9', 9,499.00)">Add to Cart</button>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+                <li>Display: 6.67"</li>
+                <li>RAM: 3GB</li>
+                <li>Storage: 64GB</li>
+                <li>Battery: 5000mAh</li>
+                <li>Camera: 16MP + AI Lens</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="product">
+        <h3>Samsung A16</h3>
+        <img src="Samsung A16.jpg" alt="Samsung A16">
+        <p>Price: Ksh. 16,848.00</p>
+        <button class="button" onclick="addToCart('Samsung A16', 16848.00)">Add to Cart</button>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+                <li>Display: 6.7"</li>
+                <li>RAM: 4GB</li>
+                <li>Storage: 128GB</li>
+                <li>Battery: 5000mAh</li>
+                <li>Camera: 16MP + AI Lens</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="product">
+        <h3>Tecno Spark 30C</h3>
+        <img src="Tecno Spark 30c.jpg" alt="Tecno Spark 30C">
+        <p>Price: Ksh. 15,000.00</p>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+                <li>Display: 6.6" HD+</li>
+                <li>Processor: Octa-Core</li>
+                <li>RAM: 4GB</li>
+                <li>Storage: 128GB</li>
+                <li>Battery: 5000mAh</li>
+                <li>Camera: 16MP + AI Lens</li>
+            </ul>
+        </div>
+        <button class="button" onclick="addToCart('Tecno Spark 30C', 15000.00)">Add to Cart</button>
+        
+    </div>
+
+    <div class="product">
+        <h3>XIAOMI Redmi A3x</h3>
+        <img src="Xiaomi Redmi A3X.jpg" alt="Xiaomi Redmi A3x">
+        <p>Price: Ksh. 8,399.00</p>
+        <button class="button" onclick="addToCart('Xiaomi Redmi A3x', 8399.00)">Add to Cart</button>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+                <li>Display: 6.71"</li>
+                <li>RAM: 3GB</li>
+                <li>Storage: 64GB</li>
+                <li>Battery: 5000mAh</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="product">
+        <h3>Badili Apple Iphone 11 Pro (Refurbrished)</h3>
+        <img src="Badili Iphone 11.jpg" alt="Badili Apple Iphone 11">
+        <p>Price: Ksh. 55,999.00</p>
+        <button class="button" onclick="addToCart('Badili Iphone 11 Pro, Refurbrished', 55999.00)">Add to Cart</button>
+        <div class="specs">
+            <strong>Specifications:</strong>
+            <ul>
+
+
+                <li>Storage: 64GB</li>
+                
+                <li>Color: Olive Green</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- Appliances -->
+<section id="appliances-section">
+<h1>Appliances</h1>
+<div class="product-container">
+    <div class="product">
+        <h3>VON VAMS-20MGX Microwave</h3>
+        <img src="VON VAMS-20MGX Microwave 6,999.jpg" alt="VON Microwave">
+        <p>Price: Ksh. 6,999.00</p>
+        <button class="button" onclick="addToCart('VON Microwave, 6999.00')">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Ramtoms 2 Door Fridge</h3>
+        <img src="Ramtoms rf339-2 door fridge 27,999.jpg" alt="Nutfields Cashewnuts 250g">
+        <p>Price: Ksh. 27,999.00</p>
+        <button class="button" onclick="addToCart('Ramtoms rf339-2 door fridge', 27999.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Lyons GK-011 Stainless 2 Burner cooker </h3>
+        <img src="Lyons GK-011 Stainless 2 Burner cooker 1599.jpg" alt="Lyons GK-011 Stainless 2 Burner cooker">
+        <p>Price: Ksh. 1,599.00</p>
+        <button class="button" onclick="addToCart('Lyons GK-011 Stainless 2 Burner cooker', 1599.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Lyons YT-121 Mixing Blender</h3>
+        <img src="Lyons YT-121 Mixing Blender 1,499.jpg" alt="Lyons YT-121 Mixing Blender">
+        <p>Price: Ksh. 1,499.00</p>
+        <button class="button" onclick="addToCart('Lyons YT-121 Mixing Blender', 1499.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Sonar Stainless Steel Water heater</h3>
+        <img src="Sonar Stainless Steel Water heater 523.jpg" alt="Sonar Stainless Steel Water heater">
+        <p>Price: Ksh. 523.00</p>
+        <button class="button" onclick="addToCart('Sonar Stainless Steel Water heater', 523.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>VON VALS-75BWY Twin Tub Wahing Machine - 7.5KG</h3>
+        <img src="VON VALS-75BWY Twin Tub Wahing Machine - 7.5KG 16,999.jpg" alt="VON VALS-75BWY Twin Tub Wahing Machine - 7.5KG">
+        <p>Price: Ksh. 16,999.00</p>
+        <button class="button" onclick="addToCart('VON VALS-75BWY Twin Tub Wahing Machine - 7.5KG', 16999.00)">Add to Cart</button>
+    </div>
+
+</div>
+</section>
+
+<!--Sound System -->
+<section id="sound-section">
+<h2></h2>
+<h1>Sound System</h1>
+<div class="product-container">
+    <div class="product">
+        <h3>Skyworth SS531 Sound Bar</h3>
+        <img src="Skyworth SS531 Sound Bar 16,629.jpg" alt="Skyworth SS531 Sound Bar">
+        <p>Price: Ksh. 16,629.00</p>
+        <button class="button" onclick="addToCart('Skyworth SS531 Sound Bar', 16629.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Vision Plus Beat Box</h3>
+        <img src="Vision Plus Beat Box 6,742.jpg" alt="Vision Plus Beat Box">
+        <p>Price: Ksh. 6,742.00</p>
+        <button class="button" onclick="addToCart('Vision Plus Beat Box', 6742.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Vitron v837 3.1 Inch Bluetooth Speaker System</h3>
+        <img src="Vitron v837 3.1 Inch Bluetooth Speaker System 7,753.jpg" alt="Vitron v837 3.1 Inch Bluetooth Speaker System">
+        <p>Price: Ksh. 7,753.00</p>
+        <button class="button" onclick="addToCart('Vitron v837 3.1 Inch Bluetooth Speaker System', 7753.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>VITRON V643 3.1 CH Subwoofer</h3>
+        <img src="VITRON V643 3.1 CH Subwoofer 4,999.jpg" alt="VITRON V643 3.1 CH Subwoofer">
+        <p>Price: Ksh. 4,999.00</p>
+        <button class="button" onclick="addToCart('VITRON V643 3.1 CH Subwoofer', 4999.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Bluetooth Speaker Music Bulb</h3>
+        <img src="Bluetooth Speaker Music Bulb 610.jpg" alt="Bluetooth Speaker Music Bulb">
+        <p>Price: Ksh. 610.00</p>
+        <button class="button" onclick="addToCart('Bluetooth Speaker Music Bulb', 610.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Onyx Studio 8 Portable Bluetooth</h3>
+        <img src="Onyx Studio 8 Portable Bluetooth 33,000.jpg" alt="Onyx Studio 8 Portable Bluetooth">
+        <p>Price: Ksh. 33,000.00</p>
+        <button class="button" onclick="addToCart('Onyx Studio 8 Portable Bluetooth',33000.00)">Add to Cart</button>
+    </div>
+
+</div>
+</section>
+
+<!-- TV Section -->
+<section id="TV-section">
+<h1>TV Section</h1>
+<div class="product-container">
+    <div class="product">
+        <h3>Gld 24" Full HD Digital Frameless LED Television - Black</h3>
+        <img src="Gld 24inch Full HD Digital Frameless LED Television - Black 8,819.jpg" alt="Gld 24 Full HD Digital Frameless LED Television - Black">
+        <p>Price: Ksh.  8,819.00</p>
+        <button class="button" onclick="addToCart('Gld 24 Full HD Digital Frameless LED Television - Black',  8819.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Amtec 24 Inch, Digital LED TV - HDMI,USB PORT-Amtec (1YR WRTY)</h3>
+        <img src="Amtec 24 Inch, Digital LED TV - HDMI,USB PORT-Amtec (1YR WRTY) 8,574.jpg" alt="Amtec 24 Inch, Digital LED TV - HDMI,USB PORT-Amtec (1YR WRTY)">
+        <p>Price: Ksh. 8,574.00</p>
+        <button class="button" onclick="addToCart('Amtec 24 Inch, Digital LED TV - HDMI,USB PORT-Amtec (1YR WRTY)', 8574.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Skyworth 43E3500G, 43-inches Full HD 2024 Frameless Google TV, Black (1YR WRTY)</h3>
+        <img src="Skyworth 43E3500G, 43-inches Full HD 2024 Frameless Google TV, Black (1YR WRTY) 25,999.jpg" alt="Skyworth 43E3500G, 43-inches">
+        <p>Price: Ksh. 25,999.00</p>
+        <button class="button" onclick="addToCart('Skyworth 43E3500G, 43-inches Full HD 2024 Frameless Google TV, Black (1YR WRTY)', 25999.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>Vision Plus 32inch HD Frameless Smart TV, DVB-T2-S2, Android and Free Wall Mount (2YRs WRTY)</h3>
+        <img src="Vision Plus 32inch HD Frameless Smart TV, DVB-T2-S2, Android and Free Wall Mount (2YRs WRTY) 11,999.jpg" alt="Vision Plus 32inch HD Frameless Smart TV">
+        <p>Price: Ksh. 11,999.00</p>
+        <button class="button" onclick="addToCart('Vision Plus 32inch HD Frameless Smart TV', 11999.00)">Add to Cart</button>
+    </div>
+
+    <div class="product">
+        <h3>TCL 43S5400 S Series, 43inch Full HD Smart TV - Black</h3>
+        <img src="TCL 43S5400 S Series, 43inch Full HD Smart TV - Black 25999.jpg" alt="TCL 43inch Full HD Smart TV - Black">
+        <p>Price: Ksh. 25,999.00</p>
+        <button class="button" onclick="addToCart('TCL 43inch Full HD Smart TV - Black', 25999.00)">Add to Cart</button>
+    </div>
+</div>
+</section>
+
+
+<div id="cart">
+    <h2>Your Cart</h2>
+    <ul id="cartItems"></ul>
+    <p id="total">Total: Ksh. 0</p>
+    <button class="button" onclick="showHistory()">Show History</button>
+    <button class="button" onclick="pay()">Pay</button>
+    <button id="payButton">Pay</button>
+
+<div id="payButton" style="display:none;">
+    <button onclick="payCash()">Pay via Cash</button>
+    <button onclick="payMpesa()">Pay via MPESA</button>
+    <button onclick="payCard()">Pay via Card</button>
+</div>
+
+<!-- Cash Payment Modal -->
+<div id="cashModal" style="display:none;">
+    <input type="number" id="cashInput" placeholder="Enter cash amount" />
+    <button onclick="calculateChange()">Submit</button>
+    <p id="cashChange"></p>
+</div>
+
+<!-- MPESA Payment Modal -->
+<div id="mpesaModal" style="display:none;">
+    <p>Till Number: 344582</p>
+    <p>Name: J B Writes</p>
+    <input type="password" id="mpesaPin" placeholder="Enter MPESA PIN" />
+    <button onclick="processMpesa()">Submit</button>
+</div>
+
+<!-- Card Payment Success -->
+<div id="cardModal" style="display:none;">
+    <p>Processing payment...</p>
+</div>
+
+<!-- Payment Successful -->
+<div id="paymentSuccess" style="display:none;">
+    <p>Payment Successful!</p>
+</div>
+</div>
+
+<div id="overlay"></div>
+<div id="receiptPopup">
+    <h2>Receipt</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody id="receiptItems"></tbody>
+    </table>
+    <p id="receiptTotal">Total: Ksh. 0</p>
+    <button class="button" onclick="printReceipt()">Print Receipt</button>
+    <button class="button" onclick="closePopup()">Close</button>
+</div>
+
+<script>
+    let cart = [];
+ let totalPrice = 0;
+
+    function addToCart(productName, price) {
+        const existingItem = cart.find(item => item.name === productName);
+        if (existingItem) {
+            existingItem.quantity++;
+            existingItem.price += price;
+        } else {
+            cart.push({ name: productName, price: price, quantity: 1 });
+        }
+        totalPrice += price;
+        updateCart();
+    }
+
+    function updateCart() {
+        const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = '';
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.name} - Ksh.${item.price.toFixed(2)} (Qty: ${item.quantity})`;
+            cartItems.appendChild(li);
+        });
+        document.getElementById('total').textContent = `Total: Ksh.${totalPrice.toFixed(2)}`;
+    }
+
+    function showHistory() {
+        const receiptItems = document.getElementById('receiptItems');
+        receiptItems.innerHTML = '';
+        let receiptTotal = 0;
+
+        cart.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>Ksh.${(item.price / item.quantity).toFixed(2)}</td><td>Ksh.${item.price.toFixed(2)}</td>`;
+            receiptItems.appendChild(tr);
+            receiptTotal += item.price;
+        });
+
+        document.getElementById('receiptTotal').textContent = `Total: Ksh.${receiptTotal.toFixed(2)}`;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('receiptPopup').style.display = 'block';
+    }
+
+    function closePopup() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('receiptPopup').style.display = 'none';
+    }
+
+    function printReceipt() {
+        window.print();
+    }
+
+    function pay() {
+        if (cart.length === 0) {
+            alert("Your cart is empty. Please add items to your cart before proceeding to pay.");
+        } else {
+            showHistory();
+        }
+    }
+</script>
+
+<script>
+    // Initialize Dexie
+    const db = new Dexie("JShoppingDatabase");
+
+    // Define a table schema
+    db.version(1).stores({
+        cart: "++productName, price"
+    });
+
+    // Open the database
+    db.open().catch((err) => {
+        console.error("Failed to open the database: ", err);
+    });
+
+    // Move this script to the end of the body
+    const itemForm = document.getElementById('itemForm');
+    itemForm.onsubmit = async (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('productName').value; 
+        const price = document.getElementById('price').value; 
+
+        // Add item to the database
+        await db.cart.add({ productName: name, price: price });
+
+        // Populate items div (assuming you have a function for this)
+        const populateItemsDiv = async () => {
+            const allItems = await db.cart.toArray();
+            // Logic to display items
+        };
+
+        populateItemsDiv();
+        itemForm.reset();
+    };
+</script>
+
+</body>
+<footer>
+    <p>&copy 2025 J B Writes. All Rights Reserved</p>
+</footer>
+</html>
